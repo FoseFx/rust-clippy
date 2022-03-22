@@ -1,0 +1,34 @@
+error: found call to `str::trim` before `str::split_whitespace`
+  --> $DIR/trim_split_whitespace.rs:44:23
+   |
+LL |     let _ = " A B C ".trim().split_whitespace(); // should trigger lint
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^ help: remove `trim()`: `split_whitespace()`
+   |
+   = note: `-D clippy::trim-split-whitespace` implied by `-D warnings`
+
+error: found call to `str::trim_start` before `str::split_whitespace`
+  --> $DIR/trim_split_whitespace.rs:45:23
+   |
+LL |     let _ = " A B C ".trim_start().split_whitespace(); // should trigger lint
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: remove `trim_start()`: `split_whitespace()`
+
+error: found call to `str::trim_end` before `str::split_whitespace`
+  --> $DIR/trim_split_whitespace.rs:46:23
+   |
+LL |     let _ = " A B C ".trim_end().split_whitespace(); // should trigger lint
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: remove `trim_end()`: `split_whitespace()`
+
+error: found call to `str::trim` before `str::split_whitespace`
+  --> $DIR/trim_split_whitespace.rs:49:37
+   |
+LL |     let _ = (" A B C ").to_string().trim().split_whitespace(); // should trigger lint
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: remove `trim()`: `split_whitespace()`
+
+error: found call to `str::trim` before `str::split_whitespace`
+  --> $DIR/trim_split_whitespace.rs:53:15
+   |
+LL |     let _ = c.trim().split_whitespace(); // should trigger lint
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^ help: remove `trim()`: `split_whitespace()`
+
+error: aborting due to 5 previous errors
+

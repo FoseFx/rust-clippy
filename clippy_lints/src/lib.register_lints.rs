@@ -330,6 +330,7 @@ store.register_lints(&[
     methods::STRING_EXTEND_CHARS,
     methods::SUSPICIOUS_MAP,
     methods::SUSPICIOUS_SPLITN,
+    methods::TRIM_SPLIT_WHITESPACE,
     methods::UNINIT_ASSUMED_INIT,
     methods::UNNECESSARY_FILTER_MAP,
     methods::UNNECESSARY_FIND_MAP,

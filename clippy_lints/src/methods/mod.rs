@@ -56,6 +56,7 @@ mod str_splitn;
 mod string_extend_chars;
 mod suspicious_map;
 mod suspicious_splitn;
+mod trim_split_whitespace;
 mod uninit_assumed_init;
 mod unnecessary_filter_map;
 mod unnecessary_fold;
@@ -284,6 +285,27 @@ declare_clippy_lint! {
     pub SHOULD_IMPLEMENT_TRAIT,
     style,
     "defining a method that should be implementing a std trait"
+}
+
+declare_clippy_lint! {
+    /// ### What it does
+    /// Warns about calling `str::trim` (or variants) before `str::split_whitespace`.
+    ///
+    /// ### Why is this bad?
+    /// `split_whitespace` already ignores leading and trailing whitespace.
+    ///
+    /// ### Example
+    /// ```rust
+    /// " A B C ".trim().split_whitespace()
+    /// ```
+    /// Use instead:
+    /// ```rust
+    /// " A B C ".split_whitespace()
+    /// ```
+    #[clippy::version = "1.61.0"]
+    pub TRIM_SPLIT_WHITESPACE,
+    pedantic,
+    "using `str::trim()` or alike before `str::split_whitespace`"
 }
 
 declare_clippy_lint! {
@@ -2068,6 +2090,7 @@ impl_lint_pass!(Methods => [
     UNWRAP_USED,
     EXPECT_USED,
     SHOULD_IMPLEMENT_TRAIT,
+    TRIM_SPLIT_WHITESPACE,
     WRONG_SELF_CONVENTION,
     OK_EXPECT,
     UNWRAP_OR_ELSE_DEFAULT,
@@ -2503,6 +2526,11 @@ fn check_methods<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>, msrv: Optio
             },
             ("to_os_string" | "to_owned" | "to_path_buf" | "to_vec", []) => {
                 implicit_clone::check(cx, name, expr, recv);
+            },
+            ("split_whitespace", []) => {
+                if let Some((method @ ("trim" | "trim_start" | "trim_end"), [recv], trim_span)) = method_call(recv) {
+                    trim_split_whitespace::check(cx, expr, recv, method, trim_span);
+                }
             },
             ("unwrap", []) => {
                 match method_call(recv) {
